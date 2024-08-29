@@ -23,3 +23,7 @@ go.work.sum
 
 # env file
 .env
+example/config/config
+example/log/log
+example/httpsvr/httpsvr
+example/cache/cache
