@@ -2,8 +2,13 @@ package db
 
 import (
 	"log"
+	"reflect"
+	"regexp"
+	"strings"
 	"sync"
 
+	"github.com/fatih/structs"
+	"github.com/gertd/go-pluralize"
 	"github.com/kodernubie/gocommon/conf"
 )
 
@@ -50,7 +55,8 @@ func Conn(name ...string) Connection {
 				return nil
 			}
 
-			ret, err := creator(typeName)
+			var err error
+			ret, err = creator(targetName)
 
 			if err != nil {
 				log.Fatal("Unable to create DB connection ", err)
@@ -64,27 +70,111 @@ func Conn(name ...string) Connection {
 	return ret
 }
 
-func Insert(obj interface{}) error {
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var pluralClient = pluralize.NewClient()
 
-	return nil
+func ToSnakeCase(str string) string {
+
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
 }
 
-func Update(obj interface{}) error {
+func GetIDValue(obj interface{}) string {
 
-	return nil
+	list := structs.Map(obj)
+
+	id, exist := list["ID"]
+
+	if exist {
+
+		return id.(string)
+	}
+
+	return ""
+}
+
+func GetTableName(obj interface{}) string {
+
+	ret := ""
+	targetObj := obj
+
+	if reflect.TypeOf(obj).Kind() == reflect.Pointer {
+
+		if reflect.TypeOf(obj).Elem().Kind() == reflect.Array ||
+			reflect.TypeOf(obj).Elem().Kind() == reflect.Slice ||
+			reflect.TypeOf(obj).Elem().Kind() == reflect.Map {
+
+			targetObj = reflect.New(reflect.TypeOf(obj).Elem().Elem()).Interface()
+		}
+	} else if reflect.TypeOf(obj).Kind() == reflect.Array ||
+		reflect.TypeOf(obj).Kind() == reflect.Slice ||
+		reflect.TypeOf(obj).Kind() == reflect.Map {
+
+		targetObj = reflect.New(reflect.TypeOf(obj).Elem()).Interface()
+	}
+
+	informer, ok := targetObj.(TableNameInformer)
+
+	if ok {
+		ret = informer.TableName()
+	}
+
+	if ret == "" {
+
+		ret = ToSnakeCase(pluralClient.Plural(structs.Name(targetObj)))
+	}
+
+	return ret
+}
+
+func Asc(fieldName string) FieldOrder {
+
+	return FieldOrder{
+		Field: fieldName,
+		Order: "ASC",
+	}
+}
+
+func Desc(fieldName string) FieldOrder {
+
+	return FieldOrder{
+		Field: fieldName,
+		Order: "DESC",
+	}
+}
+
+func Save(obj interface{}) error {
+
+	return Conn().Save(obj)
+}
+
+func UpdateMany(table interface{}, filter interface{}, update interface{}) error {
+
+	return Conn().Update(table, filter, update)
 }
 
 func Delete(obj interface{}) error {
 
-	return nil
+	return Conn().Delete(obj)
 }
 
-func Find(obj interface{}) ([]interface{}, error) {
+func DeleteMany(table interface{}, filter interface{}) error {
 
-	return nil, nil
+	return Conn().DeleteMany(table, filter)
 }
 
-func Raw() error {
+func FindById(out interface{}, id string) error {
+	return Conn().FindById(out, id)
+}
 
-	return nil
+func FindOne(out interface{}, filter interface{}, options ...FindOption) error {
+
+	return Conn().FindOne(out, filter, options...)
+}
+
+func Find(out interface{}, filter interface{}, options ...FindOption) error {
+
+	return Conn().Find(out, filter, options...)
 }

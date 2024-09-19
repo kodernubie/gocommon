@@ -27,3 +27,4 @@ example/config/config
 example/log/log
 example/httpsvr/httpsvr
 example/cache/cache
+example/db/db
