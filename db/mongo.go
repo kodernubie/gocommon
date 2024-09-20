@@ -168,7 +168,7 @@ func init() {
 		conn := &MongoConn{}
 
 		var err error
-		clientOptions := options.Client().ApplyURI(conf.Str("DB_" + configName + "_DSN"))
+		clientOptions := options.Client().ApplyURI(conf.Str("DB_" + configName + "_URL"))
 		client, err := mongo.Connect(context.TODO(), clientOptions)
 
 		if err == nil {

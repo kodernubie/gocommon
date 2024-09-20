@@ -110,7 +110,7 @@ func Search() {
 
 	users := []User{}
 
-	err := db.Find(&users, bson.D{{"name", bson.M{"$regex": filter, "$options": "im"}}})
+	err := db.Find(&users, bson.M{"name": bson.M{"$regex": filter, "$options": "im"}})
 
 	if err != nil {
 		fmt.Println("Error :", err)

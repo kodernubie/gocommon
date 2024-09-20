@@ -41,7 +41,7 @@ func Conn(name ...string) Connection {
 		ret, exist = listConnection[targetName]
 
 		if !exist {
-			typeName := conf.Str("CACHE_"+targetName+"_TYPE", "rabbitmq")
+			typeName := conf.Str("MQ_"+targetName+"_TYPE", "rabbit")
 			creator, exist := listCreator[typeName]
 
 			if !exist {
@@ -50,7 +50,7 @@ func Conn(name ...string) Connection {
 			}
 
 			var err error
-			ret, err = creator(typeName)
+			ret, err = creator(targetName)
 
 			if err != nil {
 				log.Fatal("Unable to create queue connection ", err.Error())

@@ -28,3 +28,6 @@ example/log/log
 example/httpsvr/httpsvr
 example/cache/cache
 example/db/db
+example/mq/groupqueue/group
+example/mq/publisher/publisher
+example/mq/subscriber/subscriber
