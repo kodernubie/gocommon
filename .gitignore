@@ -31,3 +31,4 @@ example/db/db
 example/mq/groupqueue/group
 example/mq/publisher/publisher
 example/mq/subscriber/subscriber
+example/lock/lock
