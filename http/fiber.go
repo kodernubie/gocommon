@@ -192,6 +192,15 @@ func toFiberHandler(handler Handler) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
 
+		defer func() {
+
+			err := recover()
+
+			if err != nil {
+				log.Errorf("recover from http handler error :", err)
+			}
+		}()
+
 		return handler(&FiberContext{
 			ctx: c,
 		})
@@ -237,7 +246,6 @@ func (o *FiberServer) Start() {
 
 	port := conf.Str("HTTP_" + o.configName + "_PORT")
 
-	log.Info("HTTP_"+o.configName+"_PORT", conf.Str("HTTP_"+o.configName+"_PORT"), "===>", port)
 	if port == "" {
 		port = "8080"
 	}

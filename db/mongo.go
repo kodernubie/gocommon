@@ -169,7 +169,7 @@ func init() {
 
 		var err error
 		clientOptions := options.Client().ApplyURI(conf.Str("DB_" + configName + "_URL"))
-		client, err := mongo.Connect(context.TODO(), clientOptions)
+		client, err := mongo.Connect(context.Background(), clientOptions)
 
 		if err == nil {
 			conn.db = client.Database(conf.Str("DB_"+configName+"_DBNAME", "default"))
