@@ -123,7 +123,7 @@ func (o *FiberContext) Next() error {
 	return o.ctx.Next()
 }
 
-func (o *FiberContext) GetReqHeader(key string) string {
+func (o *FiberContext) ReqHeader(key string) string {
 
 	list, exist := o.ctx.GetReqHeaders()[key]
 

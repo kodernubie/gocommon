@@ -25,7 +25,7 @@ type Context interface {
 	FormValue(key string, defaultValue ...string) string
 	Status(code int)
 	Next() error
-	GetReqHeader(key string) string
+	ReqHeader(key string) string
 	SetHeader(key, value string)
 	GetHeader(key string) string
 	RequestURL() string

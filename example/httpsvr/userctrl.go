@@ -176,7 +176,7 @@ func login(ctx http.Context) error {
 // and saving custom data in context that can be used in another handler
 func checkToken(ctx http.Context) error {
 
-	token := ctx.GetReqHeader("Authorization")
+	token := ctx.ReqHeader("Authorization")
 
 	if token == "" {
 		return ctx.Error(1002, "not authorized")
