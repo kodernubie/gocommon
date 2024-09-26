@@ -19,6 +19,7 @@ type Context interface {
 	Bind(target interface{}) error
 	Param(key string, defaultVal ...string) string
 	Query(key string, defaultValue ...string) string
+	QueryInt(key string, defaultValue ...int) int
 	Body() []byte
 	FormFile(key string) (*multipart.FileHeader, error)
 	SaveFile(key string, path string) error

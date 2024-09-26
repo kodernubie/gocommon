@@ -110,7 +110,12 @@ func Search() {
 
 	users := []User{}
 
-	err := db.Find(&users, bson.M{"name": bson.M{"$regex": filter, "$options": "im"}})
+	err := db.Find(&users, bson.M{"name": bson.M{"$regex": filter, "$options": "im"}},
+		db.FindOption{
+			Skip:  1,
+			Limit: 2,
+			Order: []db.FieldOrder{{"name", "asc"}},
+		})
 
 	if err != nil {
 		fmt.Println("Error :", err)

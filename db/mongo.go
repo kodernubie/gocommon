@@ -142,7 +142,7 @@ func (o *MongoConn) FindOne(out interface{}, filter interface{}, opt ...FindOpti
 	return ret.Decode(out)
 }
 
-func (o *MongoConn) Find(out interface{}, filter interface{}, options ...FindOption) error {
+func (o *MongoConn) Find(out interface{}, filter interface{}, findOptions ...FindOption) error {
 
 	collection := GetTableName(out)
 
@@ -150,7 +150,39 @@ func (o *MongoConn) Find(out interface{}, filter interface{}, options ...FindOpt
 		return errors.New("invalid collection")
 	}
 
-	cursor, err := o.db.Collection(collection).Find(context.Background(), filter)
+	var opts *options.FindOptions
+
+	if len(findOptions) > 0 {
+
+		opts = options.Find()
+
+		if findOptions[0].Skip > 0 {
+			opts = opts.SetSkip(int64(findOptions[0].Skip))
+		}
+
+		if findOptions[0].Limit > 0 {
+			opts = opts.SetLimit(int64(findOptions[0].Limit))
+		}
+
+		if len(findOptions[0].Order) > 0 {
+
+			sortList := bson.D{}
+
+			for _, sort := range findOptions[0].Order {
+
+				if sort.Order == "asc" {
+					sortList = append(sortList, bson.E{sort.Field, 1})
+				} else {
+					sortList = append(sortList, bson.E{sort.Field, -1})
+				}
+
+			}
+
+			opts = opts.SetSort(sortList)
+		}
+	}
+
+	cursor, err := o.db.Collection(collection).Find(context.Background(), filter, opts)
 
 	if err != nil {
 

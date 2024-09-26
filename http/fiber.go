@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
+	"strconv"
 
 	fiber "github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -34,7 +35,25 @@ func (o *FiberContext) Param(key string, defaultVal ...string) string {
 
 func (o *FiberContext) Query(key string, defaultVal ...string) string {
 
-	return o.ctx.Params(key, defaultVal...)
+	return o.ctx.Query(key, defaultVal...)
+}
+
+func (o *FiberContext) QueryInt(key string, defaultVal ...int) int {
+
+	ret := 0
+	retStr := o.ctx.Query(key, "")
+
+	if retStr == "" {
+
+		if len(defaultVal) > 0 {
+			ret = defaultVal[0]
+		}
+	} else {
+
+		ret, _ = strconv.Atoi(retStr)
+	}
+
+	return ret
 }
 
 func (o *FiberContext) Body() []byte {
