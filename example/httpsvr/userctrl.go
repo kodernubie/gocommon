@@ -140,7 +140,7 @@ func searchUser(ctx http.Context) error {
 		}
 	}
 
-	return ctx.ReplyPage(ret, 1, 1)
+	return ctx.ReplyPage(ret, 1, false)
 }
 
 // example login that respin with access token than will be used in restricted api

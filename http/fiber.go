@@ -96,7 +96,7 @@ func (o *FiberContext) Reply(data interface{}) error {
 	})
 }
 
-func (o *FiberContext) ReplyPage(data interface{}, pageNo int, totalPage int) error {
+func (o *FiberContext) ReplyPage(data interface{}, pageNo int, hasNext bool) error {
 
 	return o.ctx.JSON(ReplyPageObj{
 		ReplyObj: ReplyObj{
@@ -104,8 +104,8 @@ func (o *FiberContext) ReplyPage(data interface{}, pageNo int, totalPage int) er
 			Msg:  "success",
 			Data: data,
 		},
-		PageNo:    pageNo,
-		TotalPage: totalPage,
+		PageNo:  pageNo,
+		HasNext: hasNext,
 	})
 }
 

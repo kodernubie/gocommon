@@ -32,7 +32,7 @@ type Context interface {
 	RequestURL() string
 	Redirect(to string) error
 	Reply(data interface{}) error
-	ReplyPage(data interface{}, pageNo int, totalPage int) error
+	ReplyPage(data interface{}, pageNo int, hasNext bool) error
 	ReplyRaw(httpCode int, data ...[]byte) error
 	Error(code int, msg string, data ...interface{}) error
 	Download(fileName string) error
@@ -51,6 +51,6 @@ type ReplyObj struct {
 
 type ReplyPageObj struct {
 	ReplyObj
-	PageNo    int `json:"pageNo"`
-	TotalPage int `json:"totalPage"`
+	PageNo  int  `json:"pageNo"`
+	HasNext bool `json:"hasNext"`
 }
